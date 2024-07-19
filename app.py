@@ -6,10 +6,7 @@ import streamlit as st
 
 #read file "asylum-decisions.csv"
 df = pd.read_csv("asylum-decisions.csv")
-#check for missing values
-missing_values = df.isnull().sum()
-#print df columns
-print(df.columns)
+
 #establish nodes and links for sankey graph using country of origin and country of destination in df
 nodes = [{'name': i} for i in df['Country of origin'].unique()] + [{'name': i} for i in df['Country of asylum'].unique()]
 links = []
