@@ -1,6 +1,5 @@
 #import necessary packages
 import pandas as pd
-import plotly.express as px
 import plotly.graph_objects as go
 #import streamlit package
 import streamlit as st
