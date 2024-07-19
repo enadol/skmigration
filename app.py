@@ -25,6 +25,4 @@ else: df = df[df['Year'] == year]
 #create sankey graph with dropdown interactivity by year, with streamlit
 fig = go.Figure(data=[go.Sankey(node=dict(pad=15, thickness=20, line=dict(color="black", width=0.5), label= [node['name'] for node in nodes]), link=dict(source=[link['source'] for link in links], target=[link['target'] for link in links], value=[link['value'] for link in links]))])
 fig.update_layout(title_text="Asylum Seekers by Country of Origin and Destination", font_size=10)
-st.plotly_chart(fig)
-#display graph in streamlit
-st.write(fig)
+fig.show()
