@@ -20,44 +20,14 @@ for i, row in df.iterrows():
     links.append({'source': source, 'target': target, 'value': value})\
 
 # Create Sankey graph
-fig = go.Figure(data=[go.Sankey(
-    node=dict(
-        pad=15,
-        thickness=20,
-        line=dict(color="black", width=0.5),
-        label=[node['name'] for node in nodes]
-    ),
-    link=dict(
-        source=[link['source'] for link in links],
-        target=[link['target'] for link in links],
-        value=[link['value'] for link in links]
-    )
-)])
-
-fig.update_layout(title_text="Asylum Seekers Origin and Destination", font_size=10)
-fig.show()
-
-#deploy graph in streamlit
+#apply filters by year with interactive dropdown including an option to display data fr all years
+year = st.sidebar.selectbox("Year", df['Year'].unique())
+if year == "All":
+    df = df
+else: df = df[df['Year'] == year]
+#create sankey graph with dropdown interactivity by year, with streamlit
+fig = go.Figure(data=[go.Sankey(node=dict(pad=15, thickness=20, line=dict(color="black", width=0.5), label= [node['name'] for node in nodes]), link=dict(source=[link['source'] for link in links], target=[link['target'] for link in links], value=[link['value'] for link in links]))])
+fig.update_layout(title_text="Asylum Seekers by Country of Origin and Destination", font_size=10)
 st.plotly_chart(fig)
-#display dataframe
-st.dataframe(df)
-#display missing values
-st.write("Missing values:", missing_values)
-#display dataframe shape
-st.write("Dataframe shape:", df.shape)
-#display dataframe info
-st.write("Dataframe info:", df.info())
-#display dataframe columns
-st.write("Dataframe columns:", df.columns)
-#display dataframe head
-st.write("Dataframe head:", df.head())
-#display dataframe tail
-st.write("Dataframe tail:", df.tail())
-#display dataframe describe
-st.write("Dataframe describe:", df.describe())
-#display dataframe value counts
-st.write("Dataframe value counts:", df['Country of origin'].value_counts())
-#display dataframe value counts
-st.write("Dataframe value counts:", df['Country of asylum'].value_counts())
-#display sankey graph on a web page
-st.markdown(fig.to_html(include_plotlyjs='cdn'))
+#display graph in streamlit
+st.write(fig)
