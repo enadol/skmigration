@@ -85,9 +85,17 @@ else:
             source=source,
             target=target,
             value=value,
-            color=[color_dict[df_grouped.loc[i, "Country of asylum"]] for i in df_top_grouped.index]
+            color=[color_dict[df_top_grouped.iloc[i]["Country of asylum"]] for i in range(len(df_top_grouped))]
         )
     )])
 
-    fig.update_layout(title_text="Asylum Seekers Flow", font_size=10)
-    st.plotly_chart(fig)
+    # Update layout to make the graph container bigger and wider
+    fig.update_layout(
+        title_text="Asylum Seekers Flow",
+        font_size=10,
+        width=1200,  # Set the width of the figure
+        height=800   # Set the height of the figure
+    )
+
+    # Display the figure in Streamlit with full container width
+    st.plotly_chart(fig, use_container_width=True)
