@@ -15,7 +15,7 @@ for col in required_columns:
         st.stop()
 
 # Handle missing or empty cells
-df.fillna("Unknown", inplace=True)
+df.fillna(0.0, inplace=True)
 
 # Create filters by year with interactive dropdown including an option to display data for all years
 st.sidebar.subheader("Filters")
@@ -32,8 +32,8 @@ else:
 if df_filtered.empty:
     st.warning("No data available for the selected year.")
 else:
-    # Create grouped DataFrame and accumulated values
-    df_grouped = df_filtered.groupby(["Country of origin", "Country of asylum"]).size().reset_index(name="Count")
+    # Create grouped DataFrame and accumulated values. 
+    df_grouped = df_filtered.groupby(["Country of origin", "Country of asylum", "Refugees under UNHCR's mandate"]).size().reset_index(name="Count")
 
     # Create a list of unique countries for origin and asylum
     unique_origins = list(df_grouped["Country of origin"].unique())
@@ -48,9 +48,9 @@ else:
     df_grouped["target_idx"] = df_grouped["Country of asylum"].map(country_to_index)
 
     # Create a list of the Top 50 countries in "Country of asylum"
-    top_50_asylums = list(df_grouped.sort_values(by="Count", ascending=False)["Country of asylum"].head(50))
+    top_50_asylums = list(df_grouped.sort_values(by="Refugees under UNHCR's mandate", ascending=False)["Country of asylum"].head(50))
     # Create a list of the Top 20 countries in "Country of origin"
-    top_20_origins = list(df_grouped.sort_values(by="Count", ascending=False)["Country of origin"].head(20))
+    top_20_origins = list(df_grouped.sort_values(by="Refugees under UNHCR's mandate", ascending=False)["Country of origin"].head(20))
 
     # Filter the grouped DataFrame for the top origins and asylums
     df_top_grouped = df_grouped[
@@ -67,10 +67,19 @@ else:
     unique_countries_asylum = list(set(top_50_asylums))
     length_unique_countries_asylum = len(unique_countries_asylum)
 
-    # Create a list of 50 beautiful colors as valid values
-    colors = ["#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd", "#8c564b", "#e377c2", "#7f7f7f", "#bcbd22", "#17becf", "#aec7e8", "#ffbb78", "#98df8a", "#ff9896", "#c5b0d5", "#c49c94", "#f7b6d2", "#c7c7c7", "#dbdb8d", "#9edae5", "#393b79", "#637939", "#8c6d31", "#843c39", "#5254a3", "#843c39", "#5254a3", "#393b79", "#637939", "#8c6d31", "#843c39", "#5254a3", "#393b79", "#637939", "#8c6d31", "#843c39", "#5254a3", "#393b79", "#637939", "#8c6d31", "#843c39", "#5254a3", "#393b79", "#637939", "#8c6d31", "#843c39", "#5254a3"]
+    # Create a list of unique countries in top_20_origins
+    unique_countries_origin = list(set(top_20_origins))
+    length_unique_countries_origin = len(unique_countries_origin)                                   
+
+    # Create a list of 50 beautiful colors as valid values. Exclude black
+    colors=['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd', '#8c564b', '#e377c2', '#7f7f7f', '#bcbd22', '#17becf', '#aec7e8', '#ffbb78', '#98df8a', '#ff9896', '#c5b0d5', '#c49c94', '#f7b6d2', '#c7c7c7', '#dbdb8d', '#9edae5', '#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd', '#8c564b', '#e377c2', '#7f7f7f', '#bcbd22', '#17becf', '#aec7e8', '#ffbb78', '#98df8a', '#ff9896', '#c5b0d5', '#c49c94', '#f7b6d2', '#c7c7c7', '#dbdb8d', '#9edae5', '#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd', '#8c564b', '#e377c2', '#7f7f7f', '#bcbd22', '#17becf']
     # Make dictionary with 50 unique countries in top_50_asylums as keys and 50 beautiful colors as values
     color_dict = {unique_countries_asylum[i]: colors[i] for i in range(length_unique_countries_asylum)}
+
+    # Create a list of 20 beautiful colors as valid values. Exclude black
+    colors_orgin=['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd', '#8c564b', '#e377c2', '#7f7f7f', '#bcbd22', '#17becf', '#aec7e8', '#ffbb78', '#98df8a', '#ff9896', '#c5b0d5', '#c49c94', '#f7b6d2', '#c7c7c7', '#dbdb8d', '#9edae5']
+    # Make dictionary with 20 unique countries in top_20_origins as keys and 20 beautiful colors as values
+    color_dict_origin = {unique_countries_origin[i]: colors[i] for i in range(length_unique_countries_origin)}
 
     # Create Sankey graph
     fig = go.Figure(data=[go.Sankey(
@@ -79,7 +88,7 @@ else:
             thickness=20,
             line=dict(color="black", width=0.5),
             label=all_countries,
-            color=["blue"] * len(all_countries)  # Assuming a uniform color for simplicity
+            color=[color_dict_origin[df_top_grouped.iloc[i]["Country of origin"]] for i in range(len(df_top_grouped))]
         ),
         link=dict(
             source=source,
