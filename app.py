@@ -82,26 +82,33 @@ else:
     color_dict_origin = {unique_countries_origin[i]: colors[i] for i in range(length_unique_countries_origin)}
 
     # Create Sankey graph
+    # assign colors to node and link 
+    node_colors = [color_dict.get(country, "gray") for country in all_countries]
+    link_colors = [color_dict.get(df_top_grouped["Country of asylum"].iloc[i], "gray") for i in range(len(df_top_grouped))]
+
+    
     fig = go.Figure(data=[go.Sankey(
         node=dict(
             pad=15,
             thickness=20,
             line=dict(color="black", width=0.5),
             label=all_countries,
-            color=[color_dict_origin[df_top_grouped.iloc[i]["Country of origin"]] for i in range(len(df_top_grouped))]
+            color=node_colors,
         ),
         link=dict(
-            source=source,
-            target=target,
+            source=source,  
+            target=target,  
             value=value,
-            color=[color_dict[df_top_grouped.iloc[i]["Country of asylum"]] for i in range(len(df_top_grouped))]
+            color=link_colors,
         )
     )])
 
+    
     # Update layout to make the graph container bigger and wider
     fig.update_layout(
-        title_text="Asylum Seekers Flow",
-        font_size=25,
+        title_text=f"REFUGEES GLOBAL FLOW - ({year_filter})",
+        title_font_size=25,
+        font_size=15,
         width=1200,  # Set the width of the figure
         height=1200   # Set the height of the figure
     )
