@@ -112,6 +112,6 @@ else:
         width=1200,  # Set the width of the figure
         height=1200   # Set the height of the figure
     )
-
+    
     # Display the figure in Streamlit with full container width
     st.plotly_chart(fig, use_container_width=True)
