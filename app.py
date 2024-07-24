@@ -61,7 +61,7 @@ else:
     # Create source and target lists for the Sankey graph
     source = df_top_grouped["source_idx"].tolist()
     target = df_top_grouped["target_idx"].tolist()
-    value = df_top_grouped["Count"].tolist()
+    value = df_top_grouped["Refugees under UNHCR's mandate"].tolist()
 
     # Create a list of unique countries in top_50_asylums
     unique_countries_asylum = list(set(top_50_asylums))
@@ -101,9 +101,9 @@ else:
     # Update layout to make the graph container bigger and wider
     fig.update_layout(
         title_text="Asylum Seekers Flow",
-        font_size=10,
+        font_size=25,
         width=1200,  # Set the width of the figure
-        height=800   # Set the height of the figure
+        height=1200   # Set the height of the figure
     )
 
     # Display the figure in Streamlit with full container width
