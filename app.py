@@ -3,6 +3,8 @@ import pandas as pd
 import plotly.graph_objects as go
 import streamlit as st
 
+st.set_page_config(page_title="UNHCR Refugee Data Explorer", layout="wide")
+
 # Read file "edit3.xlsx"4
 df = pd.read_excel("edit4.xlsx")
 print(df.columns)
