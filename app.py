@@ -2,6 +2,7 @@
 import pandas as pd
 import plotly.graph_objects as go
 import streamlit as st
+from streamlit_autorefresh import st_autorefresh as st_refresh
 
 st.set_page_config(page_title="UNHCR Refugee Data Explorer", layout="wide")
 
@@ -42,8 +43,8 @@ if df_filtered.empty:
     st.warning("No data available for the selected year.")
 else:
     # Create grouped DataFrame and accumulated values. 
-    df_grouped = df_filtered.groupby(["Country of origin", "Country of asylum", "Refugees under UNHCR's mandate"]).size().reset_index(name="Count")
-
+    df_grouped = df_filtered.groupby(["Country of origin", "Country of asylum", \
+     "Refugees under UNHCR's mandate"]).size().reset_index(name="Count")
     # Create a list of unique countries for origin and asylum
     unique_origins = list(df_grouped["Country of origin"].unique())
     unique_asylums = list(df_grouped["Country of asylum"].unique())
@@ -57,9 +58,11 @@ else:
     df_grouped["target_idx"] = df_grouped["Country of asylum"].map(country_to_index)
 
     # Create a list of the Top 50 countries in "Country of asylum"
-    top_50_asylums = list(df_grouped.sort_values(by="Refugees under UNHCR's mandate", ascending=False)["Country of asylum"].head(50))
+    top_50_asylums = list(df_grouped.sort_values(by="Refugees under UNHCR's mandate", \
+                ascending=False)["Country of asylum"].head(50))
     # Create a list of the Top 20 countries in "Country of origin"
-    top_20_origins = list(df_grouped.sort_values(by="Refugees under UNHCR's mandate", ascending=False)["Country of origin"].head(20))
+    top_20_origins = list(df_grouped.sort_values(by="Refugees under UNHCR's mandate", \
+                    ascending=False)["Country of origin"].head(20))
 
     # Filter the grouped DataFrame for the top origins and asylums
     df_top_grouped = df_grouped[
@@ -124,3 +127,4 @@ else:
     
     # Display the figure in Streamlit with full container width
     st.plotly_chart(fig, use_container_width=True)
+st_refresh(interval=60 * 60 * 1000)  # Refresh every hour
