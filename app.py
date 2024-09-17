@@ -5,9 +5,16 @@ import streamlit as st
 
 st.set_page_config(page_title="UNHCR Refugee Data Explorer", layout="wide")
 
-# Read file "edit3.xlsx"4
-df = pd.read_excel("edit4.xlsx")
-print(df.columns)
+@st.cache_data
+# Read file "edit3.xlsx"
+def load_data(url):
+    """read data for data cache"""
+    cache_df = pd.read_excel(url)
+    return cache_df
+
+# Load data from the URL
+df=load_data("edit4.xlsx")
+#st.dataframe(df)
 
 # Check if required columns are present
 required_columns = ["Country of origin", "Country of asylum", "Year"]
